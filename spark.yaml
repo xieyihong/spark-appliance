@@ -3,8 +3,12 @@ Description: "{{Arguments.ApplicationID}} version {{Arguments.version}}"
 SenzaInfo:
   StackName: "{{Arguments.ApplicationID}}"
   Parameters:
-    - DockerImage:
-        Description: "Docker image path with version tag of Spark"
+    - DockerVersion:
+        Description: "Docker image version of spark-appliance."
+        Default: "1.6.2-6"
+    - DockerBaseImage:
+        Description: "Docker image path of spark-appliance."
+        Default: "registry.opensource.zalan.do/bi/spark"
     - ApplicationID:
         Description: "The application ID according to Yourturn/Kio"
         Default: "spark"
@@ -105,8 +109,9 @@ SenzaComponents:
         - Ref: SparkRole
       TaupageConfig:
         application_id: "{{Arguments.ApplicationID}}"
+        application_version: "{{Arguments.DockerVersion}}"
         runtime: Docker
-        source: "{{Arguments.DockerImage}}"
+        source: "{{Arguments.DockerBaseImage}}:{{Arguments.DockerVersion}}"
         root: true
         networking: host
         mint_bucket: '{{Arguments.MintBucket}}'

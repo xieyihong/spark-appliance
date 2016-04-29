@@ -1,0 +1,7 @@
+examples*
+LICENCE
+MAINTAINERS
+README.md
+spark.yaml
+tox.ini
+.gitignore

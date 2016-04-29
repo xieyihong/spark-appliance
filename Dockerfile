@@ -1,4 +1,4 @@
-FROM zalando/python:3.4.0-4
+FROM registry.opensource.zalan.do/stups/python:3.4.0-4
 MAINTAINER Teng Qiu <teng.qiu@zalando.de>
 
 ENV SPARK_VERSION="1.6.2-SNAPSHOT" HADOOP_VERSION="2.6.0"

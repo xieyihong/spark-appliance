@@ -50,14 +50,14 @@ Note that if you do not need the [thrift server](https://spark.apache.org/docs/1
 ### Running with Docker locally
 
 ```
-docker build -t registry.opensource.zalan.do/bi/spark:1.6.2-4 .
+docker build -t registry.opensource.zalan.do/bi/spark:1.6.2 .
 
 docker run -d --net=host \
            -e START_MASTER="true" \
            -e START_WORKER="true" \
            -e START_WEBAPP="true" \
            -e START_NOTEBOOK="true" \
-           registry.opensource.zalan.do/bi/spark:1.6.2-4
+           registry.opensource.zalan.do/bi/spark:1.6.2
 ```
 
 After that, you can check if the spark master is running:
@@ -101,8 +101,7 @@ And try the Jupyter Notebook with URL ```http://localhost:8888/```
 
 ```
 senza create spark.yaml singlenode \
-             DockerBaseImage=registry.opensource.zalan.do/bi/spark \
-             DockerVersion=1.6.2-6 \
+             DockerVersion=$(pierone latest bi spark --url https://registry.opensource.zalan.do) \
              StartMaster=true \
              StartWorker=true \
              StartThriftServer=true \
@@ -116,18 +115,17 @@ To enable OAuth2 you need to specify ```AuthURL``` and ```TokenInfoURL```.
 
 ```
 senza create spark.yaml master \
-             DockerBaseImage=registry.opensource.zalan.do/bi/spark \
-             DockerVersion=1.6.2-6 \
+             DockerVersion=$(pierone latest bi spark --url https://registry.opensource.zalan.do) \
              StartMaster=true \
-             StartWebApp=true
+             StartWebApp=true \
+             StartNotebook=true
 ```
 
 then wait until ```senza list spark``` shows that CloudFormation stack ```spark-master``` with status ```CREATE_COMPLETE```.
 
 ```
 senza create spark.yaml worker \
-             DockerBaseImage=registry.opensource.zalan.do/bi/spark \
-             DockerVersion=1.6.2-6 \
+             DockerVersion=$(pierone latest bi spark --url https://registry.opensource.zalan.do) \
              MasterStackName="spark-master" \
              StartWorker=true \
              ClusterSize=3
@@ -139,8 +137,7 @@ You can run a ```WebApp``` node separately with following senza command:
 
 ```
 senza create spark.yaml webapp \
-             DockerBaseImage=registry.opensource.zalan.do/bi/spark \
-             DockerVersion=1.6.2-6 \
+             DockerVersion=$(pierone latest bi spark --url https://registry.opensource.zalan.do) \
              MasterStackName="spark-master" \
              StartWebApp=true
 ```
@@ -154,7 +151,7 @@ Spark uses ZooKeeper for master process failure recovery in cluster mode. In STU
 Sample senza create script for creating exhibitor-appliance:
 ```
 senza create https://raw.githubusercontent.com/zalando/exhibitor-appliance/master/exhibitor-appliance.yaml spark \
-             DockerImage=registry.opensource.zalan.do/acid/exhibitor:3.4-p3 \
+             DockerVersion=$(pierone latest acid exhibitor --url https://registry.opensource.zalan.do) \
              ExhibitorBucket=exhibitor \
              HostedZone=teamid.example.org.
 ```
@@ -164,9 +161,7 @@ senza create https://raw.githubusercontent.com/zalando/exhibitor-appliance/maste
 After the deployment finished, you will have a CloudFormation stack ```exhibitor-spark```, use this as ```ZookeeperStackName```, you can create a HA Spark cluster:
 ```
 senza create spark.yaml ha \
-             DockerBaseImage=registry.opensource.zalan.do/bi/spark \
-             DockerVersion=1.6.2-6 \
-             ScalyrKey=XXXYYYZZZ \
+             DockerVersion=$(pierone latest bi spark --url https://registry.opensource.zalan.do) \
              StartMaster=true \
              StartWorker=true \
              StartWebApp=true \
@@ -181,8 +176,7 @@ This senza create command with ```StartMaster=true``` and ```StartWorker=true```
 First, create spark master + webapp stack:
 ```
 senza create spark.yaml master \
-             DockerBaseImage=registry.opensource.zalan.do/bi/spark \
-             DockerVersion=1.6.2-6 \
+             DockerVersion=$(pierone latest bi spark --url https://registry.opensource.zalan.do) \
              StartMaster=true \
              StartWebApp=true \
              ClusterSize=3 \
@@ -193,8 +187,7 @@ senza create spark.yaml master \
 Wait until CloudFormation stack ```spark-master``` completely deployed, then create workers:
 ```
 senza create spark.yaml worker \
-             DockerBaseImage=registry.opensource.zalan.do/bi/spark \
-             DockerVersion=1.6.2-6 \
+             DockerVersion=$(pierone latest bi spark --url https://registry.opensource.zalan.do) \
              StartWorker=true \
              ClusterSize=5 \
              ZookeeperStackName="exhibitor-spark" \
@@ -210,8 +203,7 @@ Currently the spark appliance support MySQL or PostgreSQL database as hive metas
 Once you created ```hive-site.xml```, you can pack it into your own docker image, and push this docker image into PierOne repo. Or you upload this hive-site.xml to S3, and use ```HiveSite``` parameter by senza create, such as:
 ```
 senza create spark.yaml singlenode \
-             DockerBaseImage=registry.opensource.zalan.do/bi/spark \
-             DockerVersion=1.6.2-6 \
+             DockerVersion=$(pierone latest bi spark --url https://registry.opensource.zalan.do) \
              StartMaster=true \
              StartWorker=true \
              StartWebApp=true \
@@ -355,6 +347,31 @@ For python script, no main class needed:
 
 see https://github.com/zalando/spark-appliance/pull/10#issue-112365605
 
+building example jar:
+```
+git clone https://github.com/zalando/spark-appliance.git
+cd spark-appliance/examples/scala/spark-textfile-example/
+mvn package
+cp target/spark-textfile-example-0.1-SNAPSHOT.jar .
+```
+upload some text file to s3
+```
+aws s3 cp some-file.txt s3://some-bucket/some-file.txt
+```
+submit the jar to spark:
+```
+oauth_token=xxxxx-xxx-xxx-xxx-xxxxx
+host=spark-webapp.teamip.example.org
+job_id=$(curl --insecure --request POST --header "Authorization: Bearer $oauth_token" -F file=@spark-textfile-test-0.1-SNAPSHOT.jar -F main_class=de.zalando.bi.SparkTextFile_RW_Test -F "job_args=s3://some-bucket/some-file.txt s3://some-bucket/mapped_results" https://$host/submit_application)
+```
+then, you can use this job_id to get job status
+```
+curl --insecure --request GET --header "Authorization: Bearer $oauth_token" https://$host/get_job_status/$job_id
+```
+once it is finished, you can get job outputs using this API:
+```
+curl --insecure --request GET --header "Authorization: Bearer $oauth_token" https://$host/get_job_output/$job_id
+```
 
 ## TODOs
 

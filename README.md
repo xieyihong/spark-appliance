@@ -50,14 +50,14 @@ Note that if you do not need the [thrift server](https://spark.apache.org/docs/1
 ### Running with Docker locally
 
 ```
-docker build -t registry.opensource.zalan.do/bi/spark:1.6.2 .
+docker build -t registry.opensource.zalan.do/bi/spark:1.6.2-6 .
 
 docker run -d --net=host \
            -e START_MASTER="true" \
            -e START_WORKER="true" \
            -e START_WEBAPP="true" \
            -e START_NOTEBOOK="true" \
-           registry.opensource.zalan.do/bi/spark:1.6.2
+           registry.opensource.zalan.do/bi/spark:1.6.2-6
 ```
 
 After that, you can check if the spark master is running:

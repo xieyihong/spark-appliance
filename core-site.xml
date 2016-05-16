@@ -12,10 +12,6 @@
         <value>com.amazon.ws.emr.hadoop.fs.EmrFileSystem</value>
     </property>
     <property>
-        <name>fs.s3n.endpoint</name>
-        <value>s3-eu-west-1.amazonaws.com</value>
-    </property>
-    <property>
         <name>fs.s3.buckets.create.region</name>
         <value>eu-west-1</value>
     </property>

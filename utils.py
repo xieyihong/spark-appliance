@@ -3,9 +3,11 @@
 import os
 import boto3
 import requests
+import socket
 
-instanceId = "127.0.0.1"
-private_ip = "127.0.0.1"
+hostip = socket.gethostbyname(socket.gethostname())
+instanceId = hostip
+private_ip = hostip
 region = None
 
 

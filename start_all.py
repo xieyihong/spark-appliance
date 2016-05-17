@@ -62,7 +62,7 @@ if utils.get_os_env('EXT_CONF') != "":
         logging.error("ERROR: Failed to get external config " + ext_conf)
         logging.error("exception: " + str(e))
 
-    with open(spark_dir + '/conf/spark-defaults.conf', "r+") as default, open('/tmp/' + file_name , "r") as conf:
+    with open(spark_dir + '/conf/spark-defaults.conf', "r+") as default, open('/tmp/' + file_name, "r") as conf:
         lines = default.read().splitlines()
         default.seek(0)
         default.truncate()
@@ -79,9 +79,8 @@ if utils.get_os_env('EXT_CONF') != "":
                         lines.remove(line)
                 lines.append(c)
         for line in lines:
-            default.write(line+ '\n')
+            default.write(line + '\n')
         default.close()
-
 
 if utils.get_os_env('DRIVER_MEMORY') != "":
     driver_memory = utils.get_os_env('DRIVER_MEMORY')

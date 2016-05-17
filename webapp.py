@@ -4,6 +4,7 @@ import logging
 import connexion
 from flask import request
 import utils
+import json
 
 utils.set_ec2_identities()
 private_ip = utils.get_private_ip()
@@ -127,13 +128,13 @@ def get_job_status(job_id):
     if job_id in job_watchers:
         status = job_watchers[job_id].poll()
         if status is None:
-            return {'job_id': job_id, 'status': 'running'}, 200
+            return json.dumps({'job_id': job_id, 'status': 'running'}), 200
         elif status == 0:
-            return {'job_id': job_id, 'status': 'finished'}, 201
+            return json.dumps({'job_id': job_id, 'status': 'finished'}), 201
         else:
-            return {'job_id': job_id, 'status': 'failed'}, 500
+            return json.dumps({'job_id': job_id, 'status': 'failed'}), 500
     else:
-        return {'job_id': job_id, 'error': 'job id not found'}, 404
+        return json.dumps({'job_id': job_id, 'error': 'job id not found'}), 404
 
 
 def get_output_stream(proc):

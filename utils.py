@@ -3,9 +3,15 @@
 import os
 import boto3
 import requests
+import socket
 
-instanceId = "127.0.0.1"
-private_ip = "127.0.0.1"
+try:
+    hostip = socket.gethostbyname(socket.gethostname())
+except:
+    hostip = "127.0.0.1"
+
+instanceId = hostip
+private_ip = hostip
 region = None
 
 

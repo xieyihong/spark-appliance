@@ -22,7 +22,10 @@ RUN pip3 install --upgrade numpy \
  && apt-get install -y python3-scipy python3-matplotlib
 
 ### DOWNLOADING spark package, ALWAYS NEEDED
-ADD ${SPARK_PACKAGE}.tgz /opt/
+RUN wget https://s3-eu-west-1.amazonaws.com/zalando-spark/${SPARK_PACKAGE}.tgz -O /tmp/${SPARK_PACKAGE}.tgz \
+ && tar zxf /tmp/${SPARK_PACKAGE}.tgz -C /opt \
+ && rm -rf /tmp/${SPARK_PACKAGE}.tgz \
+ && chmod -R 777 $SPARK_DIR
 
 ### CONFIGURING spark and hadoop, ALWAYS NEEDED
 RUN mv $SPARK_DIR/conf/core-site.xml.zalando $SPARK_DIR/conf/core-site.xml \

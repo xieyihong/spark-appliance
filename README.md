@@ -215,9 +215,21 @@ senza create spark.yaml singlenode \
 
 Use branch: https://github.com/zalando/spark/tree/branch-1.6-zalando
 
+Set maven options (adjust if needed)
+
+```export MAVEN_OPTS="-Xmx4g -XX:MaxPermSize=1g -XX:ReservedCodeCacheSize=1g"```
+
+(optional) Set scala-2.11 support
+
+```./dev/change-scala-version.sh 2.11```
+
 Create distribution package
 
 ```./make-distribution.sh --tgz --mvn ./build/mvn -Phadoop-2.6 -Psparkr -Phive -Phive-thriftserver -DskipTests```
+
+(for scala-2.11 add the ```-Dscala-2.11``` option):
+
+```./make-distribution.sh --tgz --mvn ./build/mvn -Phadoop-2.6 -Psparkr -Phive -Phive-thriftserver -DskipTests -Dscala-2.11```
 
 Then you will get a Spark distribution with EMRFS support. Put this package in to an EC2 instance with appropriate IAM role and try it out with:
 

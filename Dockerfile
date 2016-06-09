@@ -26,13 +26,18 @@ RUN wget https://s3-eu-west-1.amazonaws.com/zalando-spark/${SPARK_PACKAGE}.tgz -
  && tar zxf /tmp/${SPARK_PACKAGE}.tgz -C /opt \
  && rm -rf /tmp/${SPARK_PACKAGE}.tgz \
  && chmod -R 777 $SPARK_DIR
+ 
 
 ### CONFIGURING spark and hadoop, ALWAYS NEEDED - this core-site allows filesystem based credentials as well as EC2 env
 ADD core-site.xml $SPARK_DIR/conf/
+
+# Hackish solution to remove unneded jackson libraries to avoid conflicts.
+# Those libs should ideally be excluded from the spark distro
 RUN mv $SPARK_DIR/conf/emrfs-default.xml.zalando $SPARK_DIR/conf/emrfs-default.xml \
  && mv $SPARK_DIR/conf/spark-defaults.conf.zalando $SPARK_DIR/conf/spark-defaults.conf \
  && mv $SPARK_DIR/conf/spark-env.sh.zalando $SPARK_DIR/conf/spark-env.sh \
  && mkdir /tmp/s3 && mkdir /tmp/spark-events && chmod -R 777 /tmp
+ && rm $SPARK_DIR/auxlib/jackson*
 
 COPY beeline.tar.gz /tmp/
 RUN tar zxf /tmp/beeline.tar.gz -C /opt

@@ -116,6 +116,7 @@ SenzaComponents:
         networking: host
         mint_bucket: '{{Arguments.MintBucket}}'
         scalyr_account_key: "{{Arguments.ScalyrKey}}"
+        appdynamics_application: '{{Arguments.ApplicationID}}'
         #configure logrotate for application.log
         application_logrotate_size: 10M
         application_logrotate_interval: hourly

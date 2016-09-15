@@ -14,6 +14,7 @@ spark_dir = utils.get_os_env('SPARK_DIR')
 utils.set_ec2_identities()
 
 zk_conn_str = ""
+
 if utils.get_os_env('ZOOKEEPER_STACK_NAME') != "":
     zk_conn_str = utils.generate_zk_conn_str()
     os.environ['SPARK_DAEMON_JAVA_OPTS'] = "-Dspark.deploy.recoveryMode=ZOOKEEPER " \
@@ -27,21 +28,24 @@ if utils.get_os_env('HIVE_SITE_XML') != "":
     path = hive_site_xml[5:]
     bucket = path[:path.find('/')]
     file_key = path[path.find('/')+1:]
-    s3 = boto3.resource('s3')
+    region = boto3.resource('s3').meta.client.get_bucket_location(Bucket=bucket)['LocationConstraint']
+    s3 = boto3.resource('s3',region)
     try:
         s3.meta.client.download_file(bucket, file_key, spark_dir + '/conf/hive-site.xml')
         logging.info("Got hive-site.xml from " + hive_site_xml)
-    except:
+    except Exception as e:
+        print(e)
         logging.error("ERROR: Failed to get hive-site.xml from " + hive_site_xml)
 
 if utils.get_os_env('EXT_JARS') != "":
     ext_jars = utils.get_os_env('EXT_JARS').split(',')
-    s3 = boto3.resource('s3')
     for jar in ext_jars:
         path = jar[5:]
         bucket = path[:path.find('/')]
         file_key = path[path.find('/')+1:]
         file_name = path[path.rfind('/')+1:]
+        region = boto3.resource('s3').meta.client.get_bucket_location(Bucket=bucket)['LocationConstraint']
+        s3 = boto3.resource('s3',region)
         try:
             s3.meta.client.download_file(bucket, file_key, spark_dir + '/auxlib/' + file_name)
             logging.info("Got external jar from " + jar)
@@ -50,9 +54,10 @@ if utils.get_os_env('EXT_JARS') != "":
 
 if utils.get_os_env('EXT_CONF') != "":
     ext_conf = utils.get_os_env('EXT_CONF')
-    s3 = boto3.resource('s3')
     path = ext_conf[5:]
     bucket = path[:path.find('/')]
+    region = boto3.resource('s3').meta.client.get_bucket_location(Bucket=bucket)['LocationConstraint']
+    s3 = boto3.resource('s3',region)
     file_key = path[path.find('/')+1:]
     file_name = path[path.rfind('/')+1:]
     try:

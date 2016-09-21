@@ -13,9 +13,10 @@ RUN apt-get install -yq --force-yes --no-install-recommends build-essential pyth
  && pip3 install --upgrade py4j jupyter
 
 ### installing spark kernel for Jupyter notebook, remove this RUN if you do not need this feature.
-RUN wget https://s3-eu-west-1.amazonaws.com/zalando-spark/toree-kernel-0.1.0-SNAPSHOT.tar.gz -O /tmp/toree-kernel-0.1.0-SNAPSHOT.tar.gz \
- && tar zxf /tmp/toree-kernel-0.1.0-SNAPSHOT.tar.gz -C /opt \
- && rm  -rf /tmp/toree-kernel-0.1.0-SNAPSHOT.tar.gz
+RUN wget https://s3.eu-central-1.amazonaws.com/saiki-spark/toree-0.2.0.dev1-incubating-binary-release.tar.gz -O /tmp/toree-0.2.0.dev1-incubating-binary-release.tar.gz \
+ && tar zxf /tmp/toree-0.2.0.dev1-incubating-binary-release.tar.gz -C /opt \
+ && rm  -rf /tmp/toree-0.2.0.dev1-incubating-binary-release.tar.gz
+
 
 ### installing python libraries for data analyzing, remove this RUN if you do not need this feature.
 RUN pip3 install --upgrade numpy \

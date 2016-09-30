@@ -1,5 +1,5 @@
-FROM registry.opensource.zalan.do/stups/python:3.4.0-4
-MAINTAINER Teng Qiu <teng.qiu@zalando.de>
+FROM registry.opensource.zalan.do/stups/python:3.5.2-38
+MAINTAINER Team Lago <team-lago@zalando.de>
 
 ENV SPARK_VERSION="2.0.1-SNAPSHOT" HADOOP_VERSION="2.7.2"
 ENV SPARK_PACKAGE="spark-${SPARK_VERSION}-bin-${HADOOP_VERSION}"

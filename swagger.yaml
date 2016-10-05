@@ -145,13 +145,9 @@ paths:
           required: true
       responses:
         200:
-          description: Job Status is returned, but job still running
-        201:
-          description: Job Status is returned and Job Finished
+          description: Job exists and status is returned if possible
         404:
           description: Job ID not found
-        500:
-          description: Failed
   /get_job_output/{job_id}:
     get:
       summary: Get outputs of a submitted Spark application or Spark SQL query

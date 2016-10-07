@@ -1,0 +1,1 @@
+{"status": "M Dockerfile\n D beeline.tar.gz\n D core-site.xml\n D kernel.json\n?? conf/", "url": "git:git@github.com:zalando-incubator/spark-appliance.git", "author": "ssatybaldiye", "revision": "3d1bc2c6005e52069386056e523aef720bdee95b (locally modified)"}

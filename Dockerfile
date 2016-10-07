@@ -29,13 +29,10 @@ RUN wget  https://s3-eu-west-1.amazonaws.com/zalando-spark/${SPARK_PACKAGE}.tgz 
  && chmod -R 777 $SPARK_DIR
 
 ### CONFIGURING spark and hadoop, ALWAYS NEEDED - this core-site allows filesystem based credentials as well as EC2 env
-ADD core-site.xml $SPARK_DIR/conf/
-RUN mv $SPARK_DIR/conf/emrfs-default.xml.zalando $SPARK_DIR/conf/emrfs-default.xml \
- && mv $SPARK_DIR/conf/spark-defaults.conf.zalando $SPARK_DIR/conf/spark-defaults.conf \
- && mv $SPARK_DIR/conf/spark-env.sh.zalando $SPARK_DIR/conf/spark-env.sh \
- && mkdir /tmp/s3 && mkdir /tmp/spark-events && chmod -R 777 /tmp
+ADD conf/spark/ $SPARK_DIR/conf/
+RUN mkdir /tmp/s3 && mkdir /tmp/spark-events && chmod -R 777 /tmp
 
-COPY beeline.tar.gz /tmp/
+COPY lib/beeline.tar.gz /tmp/
 RUN tar zxf /tmp/beeline.tar.gz -C /opt
 
 ### UPLOADING files for webapp, optional
@@ -48,7 +45,7 @@ COPY start_all.py /opt/
 RUN chmod 777 /opt/start_all.py
 
 ### UPLOADING files for Jupyter notebook, optional
-COPY kernel.json /tmp/
+COPY conf/kernel.json /tmp/
 COPY start_notebook.sh /opt/
 RUN chmod 777 /opt/start_notebook.sh
 

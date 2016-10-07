@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- Do not modify this file directly.  Instead, copy entries that you -->
+<!-- wish to modify from this file into emrfs-site.xml and change them -->
+<!-- there.  If emrfs-site.xml does not already exist, create it.      -->
+
+<configuration>
+  <property>
+    <name>fs.emr.configuration.version</name>
+    <value>1.0</value>
+    <description>The version of this configuration file</description>
+  </property>
+  <property>
+    <name>fs.s3n.multipart.uploads.enabled</name>
+    <value>true</value>
+    <description>When enabled, large files will be uploaded to s3 using multipart uploads, must be enabled for files larger than 5GB</description>
+  </property>
+  <property>
+    <name>fs.s3.enableServerSideEncryption</name>
+    <value>false</value>
+    <description>When enabled, put object requests to s3 will be stored with encryption enabled</description>
+  </property>
+  <property>
+    <name>fs.s3.serverSideEncryptionAlgorithm</name>
+    <value>AES256</value>
+    <description>The algorithm supplied to s3 for server side encryption, default: AES256</description>
+  </property>
+  <property>
+    <name>fs.s3.consistent</name>
+    <value>false</value>
+    <description>Use dynamodb to provide S3 consistency</description>
+  </property>
+  <property>
+    <name>fs.s3.consistent.retryPolicyType</name>
+    <value>exponential</value>
+    <description>The policy, { exponential, fixed, none }, to use when retrying for consistency issues </description>
+  </property>
+  <property>
+    <name>fs.s3.consistent.retryPeriodSeconds</name>
+    <value>10</value>
+    <description>The length of time to wait between consistency retry attempts</description>
+  </property>
+  <property>
+    <name>fs.s3.consistent.retryCount</name>
+    <value>5</value>
+    <description>The maximum number of times to retry upon inconsistency</description>
+  </property>
+  <property>
+    <name>fs.s3.maxRetries</name>
+    <value>4</value>
+    <description>The number of times to retry an AWS SDK method on failure</description>
+  </property>
+  <property>
+    <name>fs.s3.sleepTimeSeconds</name>
+    <value>10</value>
+    <description>The length of time in seconds to wait between AWS SDK method failure retries</description>
+  </property>
+  <property>
+    <name>fs.s3.consistent.throwExceptionOnInconsistency</name>
+    <value>true</value>
+    <description>Throw or log ConsistencyException</description>
+  </property>
+  <property>
+    <name>fs.s3.consistent.metadata.autoCreate</name>
+    <value>true</value>
+    <description>Create metadata table automatically</description>
+  </property>
+  <property>
+    <name>fs.s3.consistent.metadata.tableName</name>
+    <value>EmrFSMetadata</value>
+    <description>Name of the metadata table in DynamoDB.</description>
+  </property>
+  <property>
+    <name>fs.s3.consistent.metadata.read.capacity</name>
+    <value>500</value>
+    <description>The read capacity to provision on create.</description>
+  </property>
+  <property>
+    <name>fs.s3.consistent.metadata.write.capacity</name>
+    <value>100</value>
+    <description>The write capacity to provision on create.</description>
+  </property>
+  <property>
+    <name>fs.s3.consistent.fastList</name>
+    <value>true</value>
+    <description>
+      When necessary, use multiple threads to list a directory. This option works only if consistency is turned on.
+    </description>
+  </property>
+  <property>
+    <name>fs.s3.consistent.fastList.prefetchMetadata</name>
+    <value>false</value>
+    <description>
+      Enable metadata prefetching for directories containing more than 20K items.
+    </description>
+  </property>
+  <property>
+    <name>fs.s3.consistent.notification.CloudWatch</name>
+    <value>false</value>
+    <description>
+      Track inconsistency with CloudWatch.
+    </description>
+  </property>
+  <property>
+    <name>fs.s3.consistent.notification.SQS</name>
+    <value>false</value>
+    <description>
+      Report inconsistency to SQS.
+    </description>
+  </property>
+</configuration>

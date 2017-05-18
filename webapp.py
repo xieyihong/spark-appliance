@@ -2,7 +2,7 @@
 
 import logging
 import connexion
-from flask import request
+from flask import request, jsonify
 import utils
 import json
 
@@ -128,13 +128,13 @@ def get_job_status(job_id):
     if job_id in job_watchers:
         status = job_watchers[job_id].poll()
         if status is None:
-            return json.dumps({'job_id': job_id, 'status': 'running'}), 200
+            return jsonify(job_id=job_id, status='running'), 200
         elif status == 0:
-            return json.dumps({'job_id': job_id, 'status': 'finished'}), 200
+            return jsonify(job_id=job_id, status='finished'), 200
         else:
-            return json.dumps({'job_id': job_id, 'error': 'could not retrieve job status'}), 200
+            return jsonify(job_id=job_id, error='could not retrieve job status'), 200
     else:
-        return json.dumps({'job_id': job_id, 'error': 'job id not found'}), 404
+        return jsonify(job_id=job_id, error='job id not found'), 404
 
 
 def get_output_stream(proc):

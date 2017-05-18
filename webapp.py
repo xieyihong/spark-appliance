@@ -130,9 +130,9 @@ def get_job_status(job_id):
         if status is None:
             return json.dumps({'job_id': job_id, 'status': 'running'}), 200
         elif status == 0:
-            return {'job_id': job_id, 'status': 'finished'}, 200
+            return json.dumps({'job_id': job_id, 'status': 'finished'}), 200
         else:
-            return {'job_id': job_id, 'error': 'could not retrieve job status'}, 200
+            return json.dumps({'job_id': job_id, 'error': 'could not retrieve job status'}), 200
     else:
         return json.dumps({'job_id': job_id, 'error': 'job id not found'}), 404
 
